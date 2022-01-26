@@ -24,7 +24,6 @@ jobs:
               
       - name: Unit Test
         run: python -m unittest -v test
-  
   sonarcloud:
     name: SonarCloud
     runs-on: ubuntu-latest
