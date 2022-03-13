@@ -63,7 +63,7 @@ jobs:
 
 
   Deploy-DEV:
-    needs: Build
+    needs: Build-DEV
     runs-on: ubuntu-latest
 
     steps:
@@ -74,7 +74,7 @@ jobs:
 
 
   Build-PRD:
-      needs: [UnitTest,SonarCloud ]
+      needs:  Deploy-DEV
       name: Build
       runs-on: ubuntu-latest
       steps: 
@@ -96,7 +96,7 @@ jobs:
           run: heroku container:push -a ${{ secrets.HEROKU_APP_NAME_PRD }} web
 
   Deploy-PRD:
-    needs: Build
+    needs: Build-PRD
     runs-on: ubuntu-latest
 
     steps:
