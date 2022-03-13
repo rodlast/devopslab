@@ -39,7 +39,7 @@ jobs:
             GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
             SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
-  Build:
+  Build-DEV:
       needs: [UnitTest,SonarCloud ]
       name: Build
       runs-on: ubuntu-latest
@@ -56,26 +56,51 @@ jobs:
             HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
           run: heroku container:login
 
-        - name: Docker Image & Push Heroku Registry
+        - name: Docker Image & Push Heroku Registry - DEV 
           env:
             HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
           run: heroku container:push -a ${{ secrets.HEROKU_APP_NAME }} web
 
-        - name: Docker Image & Push Heroku Registry
-          env:
-            HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
-          run: heroku container:push -a ${{ secrets.HEROKU_APP_NAME_PRD }} web
 
-  Deploy:
+  Deploy-DEV:
     needs: Build
     runs-on: ubuntu-latest
 
     steps:
-      - name: Deploy Heroku
+      - name: Deploy Heroku - DEV
         env:
           HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
         run: heroku container:release -a ${{ secrets.HEROKU_APP_NAME }} web
-      - name: Deploy Heroku
+
+
+  Build-PRD:
+      needs: [UnitTest,SonarCloud ]
+      name: Build
+      runs-on: ubuntu-latest
+      steps: 
+        - name: Checkout Repo
+          uses: actions/checkout@v2
+
+        - name: New Relic License
+          run: |
+             sed -i "s/licensekey/${{ secrets.NEW_RELIC_LICENSE_KEY }}/g" Dockerfile   
+
+        - name: Login to Heroku Container registry
+          env: 
+            HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+          run: heroku container:login
+
+        - name: Docker Image & Push Heroku Registry - PRD
+          env:
+            HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+          run: heroku container:push -a ${{ secrets.HEROKU_APP_NAME_PRD }} web
+
+  Deploy-PRD:
+    needs: Build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy Heroku - PRD
         env:
           HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
         run: heroku container:release -a ${{ secrets.HEROKU_APP_NAME_PRD}} web 
