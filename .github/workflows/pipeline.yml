@@ -41,7 +41,7 @@ jobs:
 
   Build-DEV:
       needs: [UnitTest,SonarCloud ]
-      name: Build
+      name: Build-DEV
       runs-on: ubuntu-latest
       steps: 
         - name: Checkout Repo
@@ -75,7 +75,7 @@ jobs:
 
   Build-PRD:
       needs:  Deploy-DEV
-      name: Build
+      name: Build-PRD
       runs-on: ubuntu-latest
       steps: 
         - name: Checkout Repo
