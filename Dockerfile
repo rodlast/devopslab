@@ -1,4 +1,4 @@
-# Use uma Imagem Official do Python
+#  Use uma Imagem Official do Python
 FROM python:3.9-slim
 
 # Declarando a váriavel do nome do arquivo de configuração do NewRelic
