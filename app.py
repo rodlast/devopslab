@@ -7,7 +7,7 @@ csrf = CSRFProtect(app)
 
 @app.route("/")
 def pagina_inicial():
-    return "Hello World Rodrigo Fior"
+    return "Hello World Grupo 8"
     
 if __name__ == '__main__':
     port = os.getenv('PORT')
